@@ -34,3 +34,14 @@ test('Deve fazer um pedido com 3 itens com um cupom de desconto', () => {
   const total = order.getTotal();
   expect(total).toBe(128);
 });
+
+test('Deve fazer um pedido com 3 itens com um cupom de desconto expirado', () => {
+  const cpf = '022.891.412-40';
+  const order = new Order(cpf, new Date('2021-12-10'));
+  order.addItem(new Item(1, 'Música', 'CD', 30), 3);
+  order.addItem(new Item(2, 'Vídeo', 'DVD', 50), 1);
+  order.addItem(new Item(3, 'Vídeo', 'VHS', 10), 2);
+  order.addCoupon(new Coupon('VALE20', 20, new Date('2021-12-01')));
+  const total = order.getTotal();
+  expect(total).toBe(160);
+});
