@@ -1,4 +1,6 @@
 import Coupon from '../src/Coupon';
+import DefaultFreightCalculator from '../src/DefaultFreightCalculator';
+import FixedFreightCalculator from '../src/FixedFreightCalculator';
 import Item from '../src/Item';
 import Order from '../src/Order';
 
@@ -14,7 +16,7 @@ test('Deve tentar criar um pedido com CPF inválido', () => {
   expect(() => new Order(cpf)).toThrow(new Error('Invalid CPF'));
 });
 
-test('Deve fazer um pedido com 3 itens', () => {
+test('Deve criar um pedido com 3 itens', () => {
   const cpf = '022.891.412-40';
   const order = new Order(cpf);
   order.addItem(new Item(1, 'Música', 'CD', 30), 3);
@@ -24,7 +26,7 @@ test('Deve fazer um pedido com 3 itens', () => {
   expect(total).toBe(160);
 });
 
-test('Deve fazer um pedido com 3 itens com um cupom de desconto', () => {
+test('Deve criar um pedido com 3 itens com um cupom de desconto', () => {
   const cpf = '022.891.412-40';
   const order = new Order(cpf);
   order.addItem(new Item(1, 'Música', 'CD', 30), 3);
@@ -35,7 +37,7 @@ test('Deve fazer um pedido com 3 itens com um cupom de desconto', () => {
   expect(total).toBe(128);
 });
 
-test('Deve fazer um pedido com 3 itens com um cupom de desconto expirado', () => {
+test('Deve criar um pedido com 3 itens com um cupom de desconto expirado', () => {
   const cpf = '022.891.412-40';
   const order = new Order(cpf, new Date('2021-12-10'));
   order.addItem(new Item(1, 'Música', 'CD', 30), 3);
@@ -44,4 +46,36 @@ test('Deve fazer um pedido com 3 itens com um cupom de desconto expirado', () =>
   order.addCoupon(new Coupon('VALE20', 20, new Date('2021-12-01')));
   const total = order.getTotal();
   expect(total).toBe(160);
+});
+
+test('Deve criar um pedido com 3 itens com o cálculo do frete com a estratégia default', () => {
+  const cpf = '022.891.412-40';
+  const order = new Order(cpf, new Date(), new DefaultFreightCalculator());
+  order.addItem(
+    new Item(4, 'Instrumentos Musicais', 'Guitarra', 1000, 100, 30, 10, 3),
+    1
+  );
+  order.addItem(
+    new Item(5, 'Instrumentos Musicais', 'Amplificador', 5000, 100, 50, 50, 20),
+    1
+  );
+  order.addItem(new Item(6, 'Acessórios', 'Cabo', 30, 10, 10, 10, 0.9), 3);
+  const freight = order.getFreight();
+  expect(freight).toBe(260);
+});
+
+test('Deve criar um pedido com 3 itens com o cálculo do frete com a estratégia fixo', () => {
+  const cpf = '022.891.412-40';
+  const order = new Order(cpf, new Date(), new FixedFreightCalculator());
+  order.addItem(
+    new Item(4, 'Instrumentos Musicais', 'Guitarra', 1000, 100, 30, 10, 3),
+    1
+  );
+  order.addItem(
+    new Item(5, 'Instrumentos Musicais', 'Amplificador', 5000, 100, 50, 50, 20),
+    1
+  );
+  order.addItem(new Item(6, 'Acessórios', 'Cabo', 30, 10, 10, 10, 0.9), 3);
+  const freight = order.getFreight();
+  expect(freight).toBe(50);
 });
