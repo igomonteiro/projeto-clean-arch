@@ -26,13 +26,13 @@ export default class Order {
     this.orderItems.push(new OrderItem(item.idItem, item.price, quantity));
   }
 
-  getFreight() {
-    return this.freigth;
-  }
-
   addCoupon(coupon: Coupon) {
     if (coupon.isExpired(this.date)) return;
     this.coupon = coupon;
+  }
+
+  getFreight() {
+    return this.freigth;
   }
 
   getTotal() {
@@ -43,6 +43,7 @@ export default class Order {
     if (this.coupon) {
       total -= this.coupon.calculateDiscount(total, this.date);
     }
+    total += this.getFreight();
     return total;
   }
 }
