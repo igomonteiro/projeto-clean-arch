@@ -1,8 +1,8 @@
 import PlaceOrder from '../../src/application/usecase/place_order/PlaceOrder';
+import DefaultFreightCalculator from '../../src/domain/entity/DefaultFreightCalculator';
 import OrderRepository from '../../src/domain/repository/OrderRepository';
 import PgPromiseConnectionAdapter from '../../src/infra/database/PgPromiseConnectionAdapter';
-import CouponRepositoryDatabase from '../../src/infra/repository/database/CouponRepositoryDatabase';
-import ItemRepositoryDatabase from '../../src/infra/repository/database/ItemRepositoryDatabase';
+import DatabaseRepositoryFactory from '../../src/infra/factory/DatabaseRepositoryFactory';
 import OrderRepositoryDatabase from '../../src/infra/repository/database/OrderRepositoryDatabase';
 
 let placeOrder: PlaceOrder;
@@ -10,14 +10,10 @@ let orderRepository: OrderRepository;
 
 beforeEach(() => {
   const connection = PgPromiseConnectionAdapter.getInstance();
-  const itemRepository = new ItemRepositoryDatabase(connection);
-  const couponRepository = new CouponRepositoryDatabase(connection);
   orderRepository = new OrderRepositoryDatabase(connection);
-  placeOrder = new PlaceOrder(
-    itemRepository,
-    orderRepository,
-    couponRepository
-  );
+  const repositoryFactory = new DatabaseRepositoryFactory();
+  const freightCalculator = new DefaultFreightCalculator();
+  placeOrder = new PlaceOrder(repositoryFactory, freightCalculator);
 });
 
 test('Deve fazer um pedido', async () => {
