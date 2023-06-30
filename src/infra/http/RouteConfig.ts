@@ -1,6 +1,7 @@
-import SimulateFreight from '../../application/usecase/simulate_freight/SimulateFreight';
 import DefaultFreightCalculator from '../../domain/entity/DefaultFreightCalculator';
 import RepositoryFactory from '../../domain/factory/RepositoryFactory';
+import GetOrderController from '../controller/GetOrderController';
+import GetOrdersController from '../controller/GetOrdersController';
 import PlaceOrderController from '../controller/PlaceOrderController';
 import SimulateFreightController from '../controller/SimulateFreightController';
 import Http from './Http';
@@ -14,6 +15,16 @@ export default class RouteConfig {
         freightCalculator
       );
       return placeOrderController.execute(params, body);
+    });
+
+    http.on('/orders', 'get', (params: any, body: any) => {
+      const getOrdersController = new GetOrdersController(repositoryFactory);
+      return getOrdersController.execute(params, body);
+    });
+
+    http.on('/orders/:code', 'get', (params: any, body: any) => {
+      const getOrderController = new GetOrderController(repositoryFactory);
+      return getOrderController.execute(params, body);
     });
 
     http.on('/simulate-freight', 'post', (params: any, body: any) => {
