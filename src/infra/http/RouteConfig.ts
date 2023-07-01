@@ -1,3 +1,4 @@
+import OrderDAO from '../../application/query/dao/OrderDAO';
 import DefaultFreightCalculator from '../../domain/entity/DefaultFreightCalculator';
 import RepositoryFactory from '../../domain/factory/RepositoryFactory';
 import GetOrderController from '../controller/GetOrderController';
@@ -7,7 +8,11 @@ import SimulateFreightController from '../controller/SimulateFreightController';
 import Http from './Http';
 
 export default class RouteConfig {
-  constructor(http: Http, repositoryFactory: RepositoryFactory) {
+  constructor(
+    http: Http,
+    repositoryFactory: RepositoryFactory,
+    orderDAO: OrderDAO
+  ) {
     http.on('/orders', 'post', (params: any, body: any) => {
       const freightCalculator = new DefaultFreightCalculator();
       const placeOrderController = new PlaceOrderController(
@@ -18,12 +23,12 @@ export default class RouteConfig {
     });
 
     http.on('/orders', 'get', (params: any, body: any) => {
-      const getOrdersController = new GetOrdersController(repositoryFactory);
+      const getOrdersController = new GetOrdersController(orderDAO);
       return getOrdersController.execute(params, body);
     });
 
     http.on('/orders/:code', 'get', (params: any, body: any) => {
-      const getOrderController = new GetOrderController(repositoryFactory);
+      const getOrderController = new GetOrderController(orderDAO);
       return getOrderController.execute(params, body);
     });
 

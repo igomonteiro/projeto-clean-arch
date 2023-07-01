@@ -36,6 +36,7 @@ create table ccca.order (
 	cpf text,
 	issue_date timestamp,
 	freight numeric,
+	total numeric,
 	sequence integer,
 	primary key (id_order)
 );
