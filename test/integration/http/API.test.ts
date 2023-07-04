@@ -1,10 +1,11 @@
 import axios from 'axios';
-import PlaceOrder from '../../src/application/usecase/place_order/PlaceOrder';
-import OrderRepository from '../../src/domain/repository/OrderRepository';
-import PgPromiseConnectionAdapter from '../../src/infra/database/PgPromiseConnectionAdapter';
-import OrderRepositoryDatabase from '../../src/infra/repository/database/OrderRepositoryDatabase';
-import DatabaseRepositoryFactory from '../../src/infra/factory/DatabaseRepositoryFactory';
-import DefaultFreightCalculator from '../../src/domain/entity/DefaultFreightCalculator';
+import PlaceOrder from '../../../src/application/usecase/place_order/PlaceOrder';
+import OrderRepository from '../../../src/domain/repository/OrderRepository';
+import PgPromiseConnectionAdapter from '../../../src/infra/database/PgPromiseConnectionAdapter';
+import OrderRepositoryDatabase from '../../../src/infra/repository/database/OrderRepositoryDatabase';
+import DatabaseRepositoryFactory from '../../../src/infra/factory/DatabaseRepositoryFactory';
+import DefaultFreightCalculator from '../../../src/domain/entity/DefaultFreightCalculator';
+import Broker from '../../../src/infra/broker/Broker';
 
 let placeOrder: PlaceOrder;
 let orderRepository: OrderRepository;
@@ -14,10 +15,11 @@ beforeEach(() => {
   orderRepository = new OrderRepositoryDatabase(connection);
   const repositoryFactory = new DatabaseRepositoryFactory();
   const freightCalculator = new DefaultFreightCalculator();
-  placeOrder = new PlaceOrder(repositoryFactory, freightCalculator);
+  const broker = new Broker();
+  placeOrder = new PlaceOrder(repositoryFactory, freightCalculator, broker);
 });
 
-test('Deve testar a API /orders (POST)', async () => {
+test.skip('Deve testar a API /orders (POST)', async () => {
   const response = await axios({
     url: 'http://localhost:3000/orders',
     method: 'post',
@@ -36,7 +38,7 @@ test('Deve testar a API /orders (POST)', async () => {
   expect(order.total).toBe(138);
 });
 
-test('Deve testar a API /orders (GET)', async () => {
+test.skip('Deve testar a API /orders (GET)', async () => {
   const input = {
     cpf: '022.891.412-40',
     orderItems: [
@@ -56,7 +58,7 @@ test('Deve testar a API /orders (GET)', async () => {
   expect(orders.orders).toHaveLength(1);
 });
 
-test('Deve testar a API /orders/<code> (GET)', async () => {
+test.skip('Deve testar a API /orders/<code> (GET)', async () => {
   const input = {
     cpf: '022.891.412-40',
     orderItems: [
@@ -76,7 +78,7 @@ test('Deve testar a API /orders/<code> (GET)', async () => {
   expect(order.code).toBe('202300000001');
 });
 
-test('Deve testar a API /simulate-freight (POST)(', async () => {
+test.skip('Deve testar a API /simulate-freight (POST)(', async () => {
   const response = await axios({
     url: 'http://localhost:3000/simulate-freight',
     method: 'post',

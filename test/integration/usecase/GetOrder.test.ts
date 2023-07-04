@@ -1,10 +1,11 @@
-import GetOrder from '../../src/application/usecase/get_order/GetOrder';
-import PlaceOrder from '../../src/application/usecase/place_order/PlaceOrder';
-import DefaultFreightCalculator from '../../src/domain/entity/DefaultFreightCalculator';
-import OrderRepository from '../../src/domain/repository/OrderRepository';
-import PgPromiseConnectionAdapter from '../../src/infra/database/PgPromiseConnectionAdapter';
-import DatabaseRepositoryFactory from '../../src/infra/factory/DatabaseRepositoryFactory';
-import OrderRepositoryDatabase from '../../src/infra/repository/database/OrderRepositoryDatabase';
+import GetOrder from '../../../src/application/usecase/get_order/GetOrder';
+import PlaceOrder from '../../../src/application/usecase/place_order/PlaceOrder';
+import DefaultFreightCalculator from '../../../src/domain/entity/DefaultFreightCalculator';
+import OrderRepository from '../../../src/domain/repository/OrderRepository';
+import Broker from '../../../src/infra/broker/Broker';
+import PgPromiseConnectionAdapter from '../../../src/infra/database/PgPromiseConnectionAdapter';
+import DatabaseRepositoryFactory from '../../../src/infra/factory/DatabaseRepositoryFactory';
+import OrderRepositoryDatabase from '../../../src/infra/repository/database/OrderRepositoryDatabase';
 
 let placeOrder: PlaceOrder;
 let getOrder: GetOrder;
@@ -16,7 +17,8 @@ beforeEach(() => {
   const repositoryFactory = new DatabaseRepositoryFactory();
   const freightCalculator = new DefaultFreightCalculator();
   getOrder = new GetOrder(repositoryFactory);
-  placeOrder = new PlaceOrder(repositoryFactory, freightCalculator);
+  const broker = new Broker();
+  placeOrder = new PlaceOrder(repositoryFactory, freightCalculator, broker);
 });
 
 test('Deve obter um pedido pelo código', async () => {

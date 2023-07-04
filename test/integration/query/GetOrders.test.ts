@@ -2,6 +2,7 @@ import GetOrders from '../../../src/application/query/get_orders/GetOrders';
 import PlaceOrder from '../../../src/application/usecase/place_order/PlaceOrder';
 import DefaultFreightCalculator from '../../../src/domain/entity/DefaultFreightCalculator';
 import OrderRepository from '../../../src/domain/repository/OrderRepository';
+import Broker from '../../../src/infra/broker/Broker';
 import OrderDAODatabase from '../../../src/infra/dao/OrderDAODatabase';
 import PgPromiseConnectionAdapter from '../../../src/infra/database/PgPromiseConnectionAdapter';
 import DatabaseRepositoryFactory from '../../../src/infra/factory/DatabaseRepositoryFactory';
@@ -18,7 +19,8 @@ beforeEach(() => {
   const freightCalculator = new DefaultFreightCalculator();
   const orderDAO = new OrderDAODatabase(connection);
   getOrders = new GetOrders(orderDAO);
-  placeOrder = new PlaceOrder(repositoryFactory, freightCalculator);
+  const broker = new Broker();
+  placeOrder = new PlaceOrder(repositoryFactory, freightCalculator, broker);
 });
 
 test('Deve obter todos os pedidos', async () => {
