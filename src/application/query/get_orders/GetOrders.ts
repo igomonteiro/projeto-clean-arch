@@ -1,4 +1,4 @@
-import OrderDAO from '../dao/OrderDAO';
+import OrderDAO from '../../dao/OrderDAO';
 import GetOrdersOutput from './GetOrdersOutput';
 
 export default class GetOrders {

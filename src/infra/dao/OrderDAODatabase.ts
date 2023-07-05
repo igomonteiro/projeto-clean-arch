@@ -1,4 +1,4 @@
-import OrderDAO from '../../application/query/dao/OrderDAO';
+import OrderDAO from '../../application/dao/OrderDAO';
 import Connection from '../database/Connection';
 
 export default class OrderDAODatabase implements OrderDAO {

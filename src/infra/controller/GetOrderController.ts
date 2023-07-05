@@ -1,4 +1,4 @@
-import OrderDAO from '../../application/query/dao/OrderDAO';
+import OrderDAO from '../../application/dao/OrderDAO';
 import GetOrder from '../../application/query/get_order/GetOrder';
 
 export default class GetOrderController {

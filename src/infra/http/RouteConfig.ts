@@ -1,7 +1,9 @@
-import OrderDAO from '../../application/query/dao/OrderDAO';
+import ItemDAO from '../../application/dao/ItemDAO';
+import OrderDAO from '../../application/dao/OrderDAO';
 import DefaultFreightCalculator from '../../domain/entity/DefaultFreightCalculator';
 import RepositoryFactory from '../../domain/factory/RepositoryFactory';
 import Broker from '../broker/Broker';
+import GetItemsController from '../controller/GetItemsController';
 import GetOrderController from '../controller/GetOrderController';
 import GetOrdersController from '../controller/GetOrdersController';
 import PlaceOrderController from '../controller/PlaceOrderController';
@@ -13,6 +15,7 @@ export default class RouteConfig {
     http: Http,
     repositoryFactory: RepositoryFactory,
     orderDAO: OrderDAO,
+    itemDAO: ItemDAO,
     broker: Broker
   ) {
     http.on('/orders', 'post', (params: any, body: any) => {
@@ -23,6 +26,11 @@ export default class RouteConfig {
         broker
       );
       return placeOrderController.execute(params, body);
+    });
+
+    http.on('/items', 'get', (params: any, body: any) => {
+      const getItemsController = new GetItemsController(itemDAO);
+      return getItemsController.execute(params, body);
     });
 
     http.on('/orders', 'get', (params: any, body: any) => {
