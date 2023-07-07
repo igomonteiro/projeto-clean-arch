@@ -17,7 +17,7 @@ export default class PlaceOrderController {
       this.broker
     );
     const input = body;
-    input.date = new Date(input.date);
+    if (input.date) input.date = new Date(input.date);
     return await placeOrder.execute(input);
   }
 }
