@@ -1,5 +1,6 @@
 import ItemDAO from '../../application/dao/ItemDAO';
 import OrderDAO from '../../application/dao/OrderDAO';
+import ValidateCoupon from '../../application/usecase/validate_coupon/ValidateCoupon';
 import DefaultFreightCalculator from '../../domain/entity/DefaultFreightCalculator';
 import RepositoryFactory from '../../domain/factory/RepositoryFactory';
 import Broker from '../broker/Broker';
@@ -8,6 +9,8 @@ import GetOrderController from '../controller/GetOrderController';
 import GetOrdersController from '../controller/GetOrdersController';
 import PlaceOrderController from '../controller/PlaceOrderController';
 import SimulateFreightController from '../controller/SimulateFreightController';
+import PgPromiseConnectionAdapter from '../database/PgPromiseConnectionAdapter';
+import CouponRepositoryDatabase from '../repository/database/CouponRepositoryDatabase';
 import Http from './Http';
 
 export default class RouteConfig {
@@ -32,6 +35,18 @@ export default class RouteConfig {
       const getItemsController = new GetItemsController(itemDAO);
       return getItemsController.execute(params, body);
     });
+
+    http.on(
+      '/validate-coupon',
+      'post',
+      async function (params: any, body: any) {
+        const validateCoupon = new ValidateCoupon(
+          new CouponRepositoryDatabase(PgPromiseConnectionAdapter.getInstance())
+        );
+        const input = body;
+        return await validateCoupon.execute(input.coupon);
+      }
+    );
 
     http.on('/orders', 'get', (params: any, body: any) => {
       const getOrdersController = new GetOrdersController(orderDAO);
